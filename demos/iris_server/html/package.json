@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "vue": "^3.2.33",
+    "pointsplotcomp": "git+https://github.com/deandevl/PointsPlotComp.git",
     "buttoncomp": "git+https://github.com/deandevl/ButtonComp.git",
     "tablecomp":"git+https://github.com/deandevl/TableComp.git",
     "selectcomp": "git+https://github.com/deandevl/SelectComp.git",

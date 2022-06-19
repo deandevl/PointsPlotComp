@@ -19,8 +19,7 @@
   },
   "homepage": "https://github.com/deandevl/PointsPlotComp#readme",
   "dependencies": {
-    "vue": "^3.2.33",
-    "eventbus": "git+https://github.com/deandevl/EventBus.git"
+    "vue": "^3.2.33"
   },
   "devDependencies": {
     "parcel": "^2.5.0",

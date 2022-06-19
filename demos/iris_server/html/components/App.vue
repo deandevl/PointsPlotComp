@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import PointsPlotComp from './PointsPlotComp.vue';
+import PointsPlotComp from 'pointsplotcomp';
 import ButtonComp from 'buttoncomp';
 import TableComp from 'tablecomp';
 import SelectComp from 'selectcomp';

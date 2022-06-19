@@ -1,0 +1,48 @@
+:root {
+  --points_plot_comp_font_family: Verdana, serif;
+  --points_plot_comp_background: white;
+  --points_plot_comp_axis_color: black;
+  --points_plot_comp_point_opacity: .6;
+  --points_plot_comp_title_color: black;
+}
+
+#container {
+  font-family: var(--points_plot_comp_font_family);
+  background-color: var(--points_plot_comp_background);
+}
+
+.titles {
+  text-anchor: middle;
+  fill: var(--points_plot_comp_title_color);
+  font-weight: bold;
+}
+
+.ticLines {
+  stroke: var(--points_plot_comp_axis_color);
+}
+
+.ticLabels {
+  text-anchor: middle;
+  color: var(--points_plot_comp_axis_color);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.axisTitle {
+  text-anchor: middle;
+  color: var(--points_plot_comp_axis_color);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.points {
+  opacity: var(--points_plot_comp_point_opacity);
+  cursor: pointer;
+}
+
+#legend {
+  cursor: move;
+  background: none;
+}
+
+/*# sourceMappingURL=PointsPlotComp.css.map */

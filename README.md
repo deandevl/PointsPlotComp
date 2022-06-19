@@ -82,5 +82,7 @@ The Vue framework makes http fetch requests to the server and displays the resul
 
 The demo illustrates a number of reactive properties of the Vue framework including dragging the legend, changing the x or y scales, applying and displaying a new line fit, and showing the current data point being hovered over.  Tables are easily constructed using  [TableComp](https://github.com/deandevl/TableComp.git) for displaying descriptive statistics and the current line fit coefficients.
 
+To start the server, in an R console run all the line in `iris_server.R` from the top through the line `iris_server$start()`.  (Note that the next two lines can be executed to list the current server or stop the server).  From any browser enter the address `127.0.0.1:8080` and the `index.html` file will be hosted from the server.  From the browser you will be able to change axis scales, choose variables for the x or y axis, hover over points, and drag the legend for a better display.
+
 
 

@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "parcel build --dist-dir=prod ./index.html"
+  },
+  "dependencies": {
+    "vue": "^3.2.33",
+    "buttoncomp": "git+https://github.com/deandevl/ButtonComp.git",
+    "tablecomp":"git+https://github.com/deandevl/TableComp.git",
+    "selectcomp": "git+https://github.com/deandevl/SelectComp.git",
+    "inputcomp": "git+https://github.com/deandevl/InputComp.git"
+  },
+  "devDependencies": {
+    "parcel": "^2.5.0",
+    "@parcel/transformer-vue": "^2.5.0"
+  }
+}

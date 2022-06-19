@@ -1,0 +1,29 @@
+{
+  "name": "pointsplotcomp",
+  "version": "0.1.0",
+  "description": "A Vue.js based browser component for plotting points",
+  "source": "./src/PointsPlotComp.vue",
+  "module": "./dist/PointsPlotComp.js",
+  "scripts": {
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deandevl/PointsPlotComp.git"
+  },
+  "keywords": [],
+  "author": "Rick Dean",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deandevl/PointsPlotComp/issues"
+  },
+  "homepage": "https://github.com/deandevl/PointsPlotComp#readme",
+  "dependencies": {
+    "vue": "^3.2.33",
+    "eventbus": "git+https://github.com/deandevl/EventBus.git"
+  },
+  "devDependencies": {
+    "parcel": "^2.5.0",
+    "@parcel/transformer-vue": "^2.5.0"
+  }
+}

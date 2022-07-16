@@ -1,5 +1,5 @@
 import "./PointsPlotComp.css";
-import {createTextVNode as $5c8ij$createTextVNode, openBlock as $5c8ij$openBlock, createElementBlock as $5c8ij$createElementBlock, createElementVNode as $5c8ij$createElementVNode, toDisplayString as $5c8ij$toDisplayString, createCommentVNode as $5c8ij$createCommentVNode, Fragment as $5c8ij$Fragment, renderList as $5c8ij$renderList, normalizeStyle as $5c8ij$normalizeStyle} from "vue";
+import {openBlock as $5c8ij$openBlock, createElementBlock as $5c8ij$createElementBlock, createElementVNode as $5c8ij$createElementVNode, toDisplayString as $5c8ij$toDisplayString, createCommentVNode as $5c8ij$createCommentVNode, Fragment as $5c8ij$Fragment, renderList as $5c8ij$renderList, normalizeStyle as $5c8ij$normalizeStyle} from "vue";
 
 function $parcel$defineInteropFlag(a) {
   Object.defineProperty(a, '__esModule', {value: true, configurable: true});
@@ -111,13 +111,21 @@ var $178698ce9e3a2c58$export$2e2bcd8739ae039 = {
             type: Number,
             default: 60
         },
-        pointSize: {
-            type: Number,
-            default: 4
-        },
-        pointColor: {
+        pointStroke: {
             type: String,
             default: "#000000"
+        },
+        pointFill: {
+            type: String,
+            default: "#FFFFFF"
+        },
+        pointSize: {
+            type: Number,
+            default: 6
+        },
+        connectPoints: {
+            type: Boolean,
+            default: false
         },
         fitData: {
             type: Array,
@@ -236,15 +244,6 @@ var $178698ce9e3a2c58$export$2e2bcd8739ae039 = {
             }
             return ytics;
         },
-        xyColor () {
-            const xycolor = [];
-            if (this.grp !== null) for(let i = 0; i < this.grp.length; i++){
-                const colorIdx = Object.keys(this.grouping).indexOf(this.grp[i]);
-                if (colorIdx !== -1) xycolor.push(this.grouping[this.grp[i]].color);
-                else xycolor.push("#000000");
-            }
-            return xycolor;
-        },
         translateXAxis () {
             return `translate(${this.marginLeft} ${this.ctrHeight + this.yLoc})`;
         },
@@ -253,6 +252,45 @@ var $178698ce9e3a2c58$export$2e2bcd8739ae039 = {
         },
         translatePoints () {
             return `translate(${this.marginLeft} ${this.yLoc})`;
+        },
+        getGroups () {
+            const groups = [];
+            let index = 0;
+            if (this.x !== null && this.y !== null) {
+                // For non-grouping case
+                if (this.grp === null) {
+                    const group = [];
+                    for(let i = 0; i < this.x.length; i++){
+                        const obj = {
+                            x: this.x[i],
+                            y: this.y[i],
+                            index: index,
+                            stroke: this.pointStroke,
+                            fill: this.pointFill
+                        };
+                        group.push(obj);
+                        index++;
+                    }
+                    groups.push(group);
+                } else {
+                    const group_names = Object.keys(this.grouping);
+                    const group_data = {};
+                    for (let name of group_names)group_data[name] = [];
+                    for(let i = 0; i < this.x.length; i++)if (group_names.indexOf(this.grp[i]) !== -1) {
+                        const obj = {
+                            x: this.x[i],
+                            y: this.y[i],
+                            index: index,
+                            stroke: this.grouping[this.grp[i]].stroke,
+                            fill: this.grouping[this.grp[i]].fill
+                        };
+                        group_data[this.grp[i]].push(obj);
+                        index++;
+                    }
+                    for (let key of Object.keys(group_data))groups.push(group_data[key]);
+                }
+            }
+            return groups;
         },
         getFittedData () {
             const fitted_data = [];
@@ -461,14 +499,22 @@ const $365bc540dfa4b1a6$var$_hoisted_18 = [
     "x2",
     "y2"
 ];
-const $365bc540dfa4b1a6$var$_hoisted_19 = /*#__PURE__*/ (0, $5c8ij$createTextVNode)(" > ");
+const $365bc540dfa4b1a6$var$_hoisted_19 = [
+    "transform"
+];
 const $365bc540dfa4b1a6$var$_hoisted_20 = [
+    "x1",
+    "y1",
+    "x2",
+    "y2"
+];
+const $365bc540dfa4b1a6$var$_hoisted_21 = [
     "fill",
     "cx",
     "cy",
     "r"
 ];
-const $365bc540dfa4b1a6$var$_hoisted_21 = [
+const $365bc540dfa4b1a6$var$_hoisted_22 = [
     "x",
     "y"
 ];
@@ -555,21 +601,48 @@ function $365bc540dfa4b1a6$export$b3890eb0ae9dca99(_ctx, _cache, $props, $setup,
                     id: "pointsGroup",
                     transform: $options.translatePoints
                 }, [
-                    ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)($props.x, (item, index)=>{
-                        return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("circle", {
-                            key: index,
-                            class: "points",
-                            fill: $options.xyColor[index],
-                            cx: ($props.x[index] - $options.xLimits.min) * $options.xScale,
-                            cy: $data.ctrHeight - ($props.y[index] - $options.yLimits.min) * $options.yScale,
-                            r: $props.pointSize,
-                            onMouseover: ($event)=>$options.mouse_over_point($event, index),
-                            onMouseleave: _cache[0] || (_cache[0] = ($event)=>$options.mouse_leave_point($event))
-                        }, null, 40, $365bc540dfa4b1a6$var$_hoisted_16);
-                    }), 128))
+                    ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)($options.getGroups, (group)=>{
+                        return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", null, [
+                            ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)(group.length, (i)=>{
+                                return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("circle", {
+                                    class: "points",
+                                    style: (0, $5c8ij$normalizeStyle)({
+                                        stroke: group[i - 1].stroke
+                                    }),
+                                    fill: group[i - 1].fill,
+                                    cx: (group[i - 1].x - $options.xLimits.min) * $options.xScale,
+                                    cy: $data.ctrHeight - (group[i - 1].y - $options.yLimits.min) * $options.yScale,
+                                    r: $props.pointSize,
+                                    onMouseover: ($event)=>$options.mouse_over_point($event, group[i - 1].index),
+                                    onMouseleave: _cache[0] || (_cache[0] = ($event)=>$options.mouse_leave_point($event))
+                                }, (0, $5c8ij$toDisplayString)(group[i - 1].icon), 45, $365bc540dfa4b1a6$var$_hoisted_16);
+                            }), 256))
+                        ]);
+                    }), 256))
                 ], 8, $365bc540dfa4b1a6$var$_hoisted_15),
-                $props.fitData ? ((0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", {
+                $props.connectPoints ? ((0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", {
                     key: 2,
+                    id: "linesGroup",
+                    transform: $options.translatePoints
+                }, [
+                    ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)($options.getGroups, (group)=>{
+                        return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", null, [
+                            ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)(group.length - 1, (i)=>{
+                                return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("line", {
+                                    style: (0, $5c8ij$normalizeStyle)({
+                                        stroke: group[i - 1].stroke
+                                    }),
+                                    x1: (group[i - 1].x - $options.xLimits.min) * $options.xScale,
+                                    y1: $data.ctrHeight - (group[i - 1].y - $options.yLimits.min) * $options.yScale,
+                                    x2: (group[i].x - $options.xLimits.min) * $options.xScale,
+                                    y2: $data.ctrHeight - (group[i].y - $options.yLimits.min) * $options.yScale
+                                }, null, 12, $365bc540dfa4b1a6$var$_hoisted_18);
+                            }), 256))
+                        ]);
+                    }), 256))
+                ], 8, $365bc540dfa4b1a6$var$_hoisted_17)) : (0, $5c8ij$createCommentVNode)("", true),
+                $props.fitData ? ((0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", {
+                    key: 3,
                     id: "fitGroup",
                     transform: $options.translatePoints
                 }, [
@@ -583,36 +656,35 @@ function $365bc540dfa4b1a6$export$b3890eb0ae9dca99(_ctx, _cache, $props, $setup,
                             y1: $data.ctrHeight - (item.y1 - $options.yLimits.min) * $options.yScale,
                             x2: (item.x2 - $options.xLimits.min) * $options.xScale,
                             y2: $data.ctrHeight - (item.y2 - $options.yLimits.min) * $options.yScale
-                        }, null, 12, $365bc540dfa4b1a6$var$_hoisted_18);
+                        }, null, 12, $365bc540dfa4b1a6$var$_hoisted_20);
                     }), 128))
-                ], 8, $365bc540dfa4b1a6$var$_hoisted_17)) : (0, $5c8ij$createCommentVNode)("", true),
+                ], 8, $365bc540dfa4b1a6$var$_hoisted_19)) : (0, $5c8ij$createCommentVNode)("", true),
                 $props.grouping ? ((0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("g", {
-                    key: 3,
+                    key: 4,
                     id: "legend",
                     onMousedown: _cache[1] || (_cache[1] = ($event)=>$options.mouse_legend_down($event)),
                     onMousemove: _cache[2] || (_cache[2] = ($event)=>$options.mouse_legend_move($event)),
                     onMouseup: _cache[3] || (_cache[3] = ($event)=>$options.mouse_legend_end($event)),
                     onMouseout: _cache[4] || (_cache[4] = ($event)=>$options.mouse_legend_end($event))
                 }, [
-                    $365bc540dfa4b1a6$var$_hoisted_19,
                     ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)($props.grouping, (item, key, index)=>{
                         return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("circle", {
                             key: index,
-                            fill: item.color,
+                            fill: item.fill,
                             cx: .85 * $data.ctrWidth,
                             cy: 0.2 * $data.ctrHeight + index * 30 - 5,
                             r: $props.pointSize
-                        }, null, 8, $365bc540dfa4b1a6$var$_hoisted_20);
+                        }, null, 8, $365bc540dfa4b1a6$var$_hoisted_21);
                     }), 128)),
                     ((0, $5c8ij$openBlock)(true), (0, $5c8ij$createElementBlock)((0, $5c8ij$Fragment), null, (0, $5c8ij$renderList)($props.grouping, (item, key, index)=>{
                         return (0, $5c8ij$openBlock)(), (0, $5c8ij$createElementBlock)("text", {
                             key: index,
                             style: (0, $5c8ij$normalizeStyle)({
-                                stroke: item.color
+                                stroke: item.stroke
                             }),
                             x: .85 * $data.ctrWidth + 20,
                             y: 0.2 * $data.ctrHeight + index * 30
-                        }, (0, $5c8ij$toDisplayString)(key), 13, $365bc540dfa4b1a6$var$_hoisted_21);
+                        }, (0, $5c8ij$toDisplayString)(key), 13, $365bc540dfa4b1a6$var$_hoisted_22);
                     }), 128))
                 ], 32)) : (0, $5c8ij$createCommentVNode)("", true)
             ])
@@ -641,7 +713,7 @@ let $68c7e742f55826b2$var$initialize = ()=>{
     $68c7e742f55826b2$var$script.render = (parcelRequire("4FlDc")).render;
     $68c7e742f55826b2$var$script.__cssModules = {};
     (parcelRequire("8WtaD")).default($68c7e742f55826b2$var$script);
-    $68c7e742f55826b2$var$script.__scopeId = "data-v-244368";
+    $68c7e742f55826b2$var$script.__scopeId = "data-v-be41dd";
     $68c7e742f55826b2$var$script.__file = "PointsPlotComp.vue";
 };
 $68c7e742f55826b2$var$initialize();

@@ -14,6 +14,7 @@
         :y-axis="yAxis"
         :grouping="grouping"
         :fit-data="fitData"
+        :connect-points="connectPoints"
         @points-plot-comp-hover="onPointHover"
       />
       <div id="tablesDiv">
@@ -131,11 +132,12 @@ export default {
       },
       yAxis: null,
       grouping: {
-        'Iris-setosa': {color:'#FF19D9'},
-        'Iris-versicolor':{color:'#55FF33'},
-        'Iris-virginica':{color:'#3377FF'}
+        'Iris-setosa': {fill:'#FF19D9', stroke: '#000000'},
+        'Iris-versicolor':{fill:'#55FF33', stroke: '#000000'},
+        'Iris-virginica':{fill:'#3377FF', stroke: '#000000'}
       },
       fitData: null,
+      connectPoints: false,
       varTableRows: null,
       varTableHeadings: ['Name','Mean','Variance','Median','Min','Max','95th Q'],
       varTableHeight: 150,
@@ -318,13 +320,6 @@ export default {
       )
       this.variables.push(key);
     }
-    /*const min = variables_obj.min;
-    const max = variables_obj.max;
-    for(const [idx, name] of variables_obj.variables.entries()){
-      this.tableRows.push({'name': name, 'min': min[idx], 'max': max[idx]});
-      this.variables.push(name);
-    }*/
-
     await this.updatePlot();
   }
 };

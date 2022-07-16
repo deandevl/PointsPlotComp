@@ -28,33 +28,35 @@ A prop in Vue.js is a custom attribute for passing information from a parent com
 
 `width` -- A numeric that defines the overall width of the svg. (default: 800)
 
-height -- A numeric that defines the overall height of the svg. (default: 600)
+`height` -- A numeric that defines the overall height of the svg. (default: 600)
 
 `marginLeft` -- A numeric that defines the plot's left margin. (default: 60)
 
 `marginBottom` -- A numeric that defines the plot's bottom margin. (default: 60)
 
-`pointSize` -- A numeric that defines point size in pixels. (default: 4)
+`pointStroke` --  string that defines the point stroke color (point is an svg circle element). (default: "#000000")
 
-`pointColor` -- A string that defines the point fill color. (default: "#000000")
+`pointFill` -- string that defines the point fill color. (default: "#FFFFFF")
+
+`pointSize` -- A numeric that defines point size in pixels. (default: 6)
+
+`connectPoints` -- A boolean which if *true* connects the points with lines. (default: *false*)
 
 `fitData` -- An array of objects with elements `x` and `y` for defining the coordinates of a fitted regression. (default: null)
 
 `fitPointColor` -- A string that defines the point fill color. (default is red: "#FF1940")
 
-`grouping` -- A object with keys for the string name of the group and a string value that defines its color. (default: null). An example from the demonstration:
+`grouping` -- A object with keys for the string name of each group and their string values for point *fill* and *stroke*. (default: null). An example from the demonstration:
 
 ```
 grouping: {
-        'Iris-setosa': {color:'#FF19D9'},
-        'Iris-versicolor':{color:'#55FF33'},
-        'Iris-virginica':{color:'#3377FF'}
+        'Iris-setosa': {fill:'#FF19D9', stroke: '#000000'},
+        'Iris-versicolor':{fill:'#55FF33', stroke: '#000000'},
+        'Iris-virginica':{fill:'#3377FF', stroke: '#000000'}
       },
 ```
 
 `cssVariables` -- defines some css variables for easy styling of **points-plot-comp** (object, default: null)
-
-
 
 ## Styling ##
 

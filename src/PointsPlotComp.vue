@@ -105,19 +105,38 @@
           id="pointsGroup"
           :transform="translatePoints"
         >
-          <circle 
-            v-for="(item,index) in x"
-            :key="index"
-            class="points"
-            :fill="xyColor[index]"
-            :cx="(x[index] - xLimits.min) * xScale"
-            :cy="ctrHeight - (y[index] - yLimits.min) * yScale"
-            :r="pointSize"
-            @mouseover="mouse_over_point($event,index)"
-            @mouseleave="mouse_leave_point($event)"
-          />
+          <g v-for="group in getGroups">
+            <circle class="points" v-for="i in group.length"
+              :style="{stroke: group[i-1].stroke}"
+              :fill="group[i-1].fill"
+              :cx="(group[i-1].x - xLimits.min) * xScale"
+              :cy="ctrHeight - (group[i-1].y - yLimits.min) * yScale"
+              :r="pointSize"
+              @mouseover="mouse_over_point($event, group[i-1].index)"
+              @mouseleave="mouse_leave_point($event)"
+            >
+              {{group[i-1].icon}}
+            </circle>
+          </g>
         </g>
-        
+
+        <!--connect points with lines-->
+        <g
+          id="linesGroup"
+          v-if="connectPoints"
+          :transform="translatePoints"
+        >
+          <g v-for="group in getGroups">
+            <line v-for="i in group.length-1"
+              :style="{stroke: group[i-1].stroke}"
+              :x1="(group[i-1].x - xLimits.min) * xScale"
+              :y1="ctrHeight - (group[i-1].y - yLimits.min) * yScale"
+              :x2="(group[i].x - xLimits.min) * xScale"
+              :y2="ctrHeight - (group[i].y - yLimits.min) * yScale"
+            >
+            </line>
+          </g>
+        </g>
         <!--draw fit data-->
         <g
           v-if="fitData"
@@ -144,11 +163,11 @@
           @mouseup="mouse_legend_end($event)"
           @mouseout="mouse_legend_end($event)"
         >
-          >
+
           <circle
             v-for="(item,key,index) in grouping"
             :key="index"
-            :fill="item.color"
+            :fill="item.fill"
             :cx=".85 * ctrWidth"
             :cy="0.2 * ctrHeight + index * 30 - 5"
             :r="pointSize"
@@ -156,13 +175,12 @@
           <text
             v-for="(item,key,index) in grouping"
             :key="index"
-            :style="{stroke: item.color}"
+            :style="{stroke: item.stroke}"
             :x=".85 * ctrWidth + 20"
             :y="0.2 * ctrHeight + index * 30"
           >
             {{ key }}
           </text>
-          
         </g>
       </g>
     </svg>
@@ -231,13 +249,21 @@ export default {
       type: Number,
       default: 60
     },
-    pointSize: {
-      type: Number,
-      default: 4
-    },
-    pointColor: {
+    pointStroke: {
       type: String,
       default: '#000000'
+    },
+    pointFill: {
+      type: String,
+      default: '#FFFFFF'
+    },
+    pointSize: {
+      type: Number,
+      default: 6
+    },
+    connectPoints: {
+      type: Boolean,
+      default: false
     },
     fitData: {
       type: Array,
@@ -356,20 +382,6 @@ export default {
       }
       return ytics;
     },
-    xyColor() {
-      const xycolor = [];
-      if(this.grp !== null) {
-        for (let i=0; i < this.grp.length; i++) {
-          const colorIdx = Object.keys(this.grouping).indexOf(this.grp[i]);
-          if (colorIdx !== -1) {
-            xycolor.push(this.grouping[this.grp[i]].color)
-          } else {
-            xycolor.push('#000000')
-          }
-        }
-      }
-      return xycolor;
-    },
     translateXAxis(){
       return `translate(${this.marginLeft} ${this.ctrHeight + this.yLoc})`
     },
@@ -378,6 +390,51 @@ export default {
     },
     translatePoints(){
       return `translate(${this.marginLeft} ${this.yLoc})`
+    },
+    getGroups(){
+      const groups = [];
+      let index = 0;
+      if(this.x !== null && this.y !== null){
+        // For non-grouping case
+        if(this.grp === null){
+          const group = [];
+          for(let i = 0; i < this.x.length; i++){
+            const obj = {
+              x: this.x[i],
+              y: this.y[i],
+              index: index,
+              stroke :this.pointStroke,
+              fill:this.pointFill,
+            }
+            group.push(obj);
+            index++;
+          }
+          groups.push(group);
+        }else{
+          const group_names = Object.keys(this.grouping);
+          const group_data = {};
+          for(let name of group_names){
+            group_data[name] = [];
+          }
+          for(let i = 0; i < this.x.length; i++){
+            if(group_names.indexOf(this.grp[i]) !== -1){
+              const obj = {
+                x: this.x[i],
+                y: this.y[i],
+                index: index,
+                stroke :this.grouping[this.grp[i]].stroke,
+                fill:this.grouping[this.grp[i]].fill
+              }
+              group_data[this.grp[i]].push(obj);
+              index++;
+            }
+          }
+          for(let key of Object.keys(group_data)){
+            groups.push(group_data[key]);
+          }
+        }
+      }
+      return groups;
     },
     getFittedData(){
       const fitted_data = [];
